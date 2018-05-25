@@ -14,14 +14,14 @@ import com.example.android.quakereport.databinding.ListItemBinding;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
-    EarthquakeAdapter(Activity context, ArrayList<Earthquake> earthquakes) {
+    EarthquakeAdapter(Activity context, List<Earthquake> earthquakes) {
         super(context, 0, earthquakes);
     }
 
@@ -70,7 +70,7 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
             }
 
             Date dateObject = new Date(earthquake.getDate());
-            SimpleDateFormat dateFormatter = new SimpleDateFormat("DD MMM, yyyy", Locale.getDefault());
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("dd MMM, yyyy", Locale.getDefault());
             binding.date.setText(dateFormatter.format(dateObject));
             SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm", Locale.getDefault());
             binding.time.setText(timeFormatter.format(dateObject));
