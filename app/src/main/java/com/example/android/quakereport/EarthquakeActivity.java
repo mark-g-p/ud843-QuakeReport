@@ -17,19 +17,19 @@ package com.example.android.quakereport;
 
 
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.databinding.DataBindingUtil;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.example.android.quakereport.databinding.EarthquakeActivityBinding;
 
@@ -53,16 +53,22 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earthquake_activity);
         binding = DataBindingUtil.setContentView(this, R.layout.earthquake_activity);
+//      Check if there is an Internet connection.
+        ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = null;
+        if (cm != null) {
+            activeNetwork = cm.getActiveNetworkInfo();
+        }
 
-        ListView earthquakeListView = findViewById(R.id.list);
-        earthquakeListView.setEmptyView(findViewById(R.id.empty_view));
+        if ( activeNetwork != null && activeNetwork.isConnectedOrConnecting()){
+        binding.list.setEmptyView(binding.emptyView);
         adapter = new EarthquakeAdapter(this, new ArrayList<Earthquake>());
-        earthquakeListView.setAdapter(adapter);
+        binding.list.setAdapter(adapter);
 
         getLoaderManager().initLoader(1, null, this);
 
 //        Open link in browser when list item is pressed
-        earthquakeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        binding.list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Earthquake earthquake = (Earthquake) parent.getItemAtPosition(position);
@@ -70,6 +76,10 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
                 startActivity(browserIntent);
             }
         });
+        }else{
+            binding.loadingSpinner.setVisibility(View.GONE);
+            binding.emptyView.setText(getString(R.string.problem_internet_connection));
+        }
     }
 
     private void updateUi(List<Earthquake> earthquakes) {
@@ -81,9 +91,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         if (earthquakes != null && !earthquakes.isEmpty()) {
             adapter.addAll(earthquakes);
         }else{
-            TextView emptyView = findViewById(R.id.empty_view);
-            emptyView.setText(getString(R.string.no_earthquakes_loaded));
-            Log.e("TAG", "earthquakes list is null");
+            binding.emptyView.setText(getString(R.string.no_earthquakes_loaded));
         }
     }
 
