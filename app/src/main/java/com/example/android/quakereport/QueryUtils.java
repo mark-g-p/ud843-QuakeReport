@@ -21,7 +21,7 @@ import static com.example.android.quakereport.EarthquakeActivity.LOG_TAG;
 /**
  * Helper methods related to requesting and receiving earthquake data from USGS.
  */
-public final class QueryUtils {
+final class QueryUtils {
 
     /**
      * Create a private constructor because no one should ever create a {@link QueryUtils} object.
@@ -113,7 +113,11 @@ public final class QueryUtils {
 
         // Create an empty ArrayList that we can start adding earthquakes to
         ArrayList<Earthquake> earthquakes = new ArrayList<>();
-
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         // Try to parse the SAMPLE_JSON_RESPONSE. If there's a problem with the way the JSON
         // is formatted, a JSONException exception object will be thrown.
         // Catch the exception so the app doesn't crash, and print the error message to the logs.
@@ -121,7 +125,7 @@ public final class QueryUtils {
             JSONObject jsonObject = new JSONObject(makeHttpRequest(createUrl(urlString)));
             JSONArray earthquakesArray = jsonObject.getJSONArray("features");
             int size = earthquakesArray.length();
-            for (int i = 0; i < earthquakesArray.length(); i++) {
+            for (int i = 0; i < size; i++) {
                 JSONObject earthquake = earthquakesArray.getJSONObject(i);
                 JSONObject properties = earthquake.getJSONObject("properties");
                 double magnitude = properties.getDouble("mag");
@@ -129,7 +133,6 @@ public final class QueryUtils {
                 long date = properties.getLong("time");
                 String url = properties.getString("url");
                 earthquakes.add(new Earthquake(magnitude, place, date, url));
-
             }
 
         } catch (JSONException e) {
@@ -140,6 +143,7 @@ public final class QueryUtils {
         } catch (IOException e) {
             e.printStackTrace();
             Log.e(LOG_TAG, "Error with input stream", e);
+
         }
 
         // Return the list of earthquakes

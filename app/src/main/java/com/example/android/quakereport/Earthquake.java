@@ -1,8 +1,8 @@
 package com.example.android.quakereport;
 
-public class Earthquake {
-    String place;
-    long date;
+class Earthquake {
+    private String place;
+    private long date;
     private double magnitude;
     private String url;
 

@@ -20,7 +20,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
+class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
     EarthquakeAdapter(Activity context, List<Earthquake> earthquakes) {
         super(context, 0, earthquakes);
     }

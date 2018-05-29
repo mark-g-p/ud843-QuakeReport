@@ -19,14 +19,19 @@ package com.example.android.quakereport;
 import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
+import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import com.example.android.quakereport.databinding.EarthquakeActivityBinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,12 +46,16 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
     // Find a reference to the {@link ListView} in the layout
     private EarthquakeAdapter adapter;
 
+    private EarthquakeActivityBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earthquake_activity);
+        binding = DataBindingUtil.setContentView(this, R.layout.earthquake_activity);
 
         ListView earthquakeListView = findViewById(R.id.list);
+        earthquakeListView.setEmptyView(findViewById(R.id.empty_view));
         adapter = new EarthquakeAdapter(this, new ArrayList<Earthquake>());
         earthquakeListView.setAdapter(adapter);
 
@@ -64,17 +73,26 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
     }
 
     private void updateUi(List<Earthquake> earthquakes) {
+//        Hide ProgressBar
+        binding.loadingSpinner.setVisibility(View.GONE);
+//        Clean previous list from the adapter.
         adapter.clear();
-        adapter.addAll(earthquakes);
+        // Populate adapter with new data.
+        if (earthquakes != null && !earthquakes.isEmpty()) {
+            adapter.addAll(earthquakes);
+        }else{
+            TextView emptyView = findViewById(R.id.empty_view);
+            emptyView.setText(getString(R.string.no_earthquakes_loaded));
+            Log.e("TAG", "earthquakes list is null");
+        }
     }
 
-
     @Override
-    public void onLoadFinished(@NonNull Loader<List<Earthquake>> loader, List<Earthquake> earthquakes) {
-//        Show fetched data on the screen.
-        if (earthquakes != null) {
-            updateUi(earthquakes);
-        }
+    public void onLoadFinished
+            (@NonNull Loader<List<Earthquake>> loader, List<Earthquake> earthquakes) {
+//      Show fetched data on the screen.
+
+        updateUi(earthquakes);
     }
 
     @Override
