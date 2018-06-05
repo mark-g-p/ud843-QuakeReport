@@ -28,6 +28,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 
@@ -60,23 +62,23 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
             activeNetwork = cm.getActiveNetworkInfo();
         }
 
-        if ( activeNetwork != null && activeNetwork.isConnectedOrConnecting()){
-        binding.list.setEmptyView(binding.emptyView);
-        adapter = new EarthquakeAdapter(this, new ArrayList<Earthquake>());
-        binding.list.setAdapter(adapter);
+        if (activeNetwork != null && activeNetwork.isConnectedOrConnecting()) {
+            binding.list.setEmptyView(binding.emptyView);
+            adapter = new EarthquakeAdapter(this, new ArrayList<Earthquake>());
+            binding.list.setAdapter(adapter);
 
-        getLoaderManager().initLoader(1, null, this);
+            getLoaderManager().initLoader(1, null, this);
 
 //        Open link in browser when list item is pressed
-        binding.list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Earthquake earthquake = (Earthquake) parent.getItemAtPosition(position);
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(earthquake.getUrl()));
-                startActivity(browserIntent);
-            }
-        });
-        }else{
+            binding.list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Earthquake earthquake = (Earthquake) parent.getItemAtPosition(position);
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(earthquake.getUrl()));
+                    startActivity(browserIntent);
+                }
+            });
+        } else {
             binding.loadingSpinner.setVisibility(View.GONE);
             binding.emptyView.setText(getString(R.string.problem_internet_connection));
         }
@@ -90,7 +92,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         // Populate adapter with new data.
         if (earthquakes != null && !earthquakes.isEmpty()) {
             adapter.addAll(earthquakes);
-        }else{
+        } else {
             binding.emptyView.setText(getString(R.string.no_earthquakes_loaded));
         }
     }
@@ -112,5 +114,24 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
     @Override
     public Loader<List<Earthquake>> onCreateLoader(int id, @Nullable Bundle args) {
         return new EarthquakeLoader(this, USGS_REQUEST_URL);
+    }
+
+    @Override
+    // This method initialize the contents of the Activity's options menu.
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the Options Menu we specified in XML
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsIntent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
