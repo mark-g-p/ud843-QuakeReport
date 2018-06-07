@@ -12,8 +12,8 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 --><!-- Layout for a list of earthquakes -->
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <android.support.constraint.ConstraintLayout
@@ -40,9 +40,8 @@
             android:id="@+id/empty_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:text="@string/no_earthquakes_loaded"
             android:gravity="center"
-            />
+            tools:text="@string/no_earthquakes_loaded" />
 
         <ListView
             android:id="@+id/list"

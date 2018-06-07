@@ -7,6 +7,7 @@ import java.util.List;
 
 class EarthquakeLoader extends AsyncTaskLoader<List<Earthquake>> {
     private String[] urls;
+
     EarthquakeLoader(Context context, String... urls) {
         super(context);
         this.urls = urls;
@@ -21,6 +22,7 @@ class EarthquakeLoader extends AsyncTaskLoader<List<Earthquake>> {
         // Perform the HTTP request for earthquake data and process the response.
         return QueryUtils.extractEarthquakes(urls[0]);
     }
+
     @Override
     protected void onStartLoading() {
         forceLoad();
